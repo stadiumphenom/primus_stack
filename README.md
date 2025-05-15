@@ -1,7 +1,5 @@
 # Project NOVA: Networked Orchestration of Virtual Agents
 
-![Project NOVA Banner](https://via.placeholder.com/1200x300?text=Project+NOVA+Banner)
-
 Project NOVA (Networked Orchestration of Virtual Agents) is a comprehensive, self-hosted AI assistant ecosystem that leverages n8n workflows, LLMs, and 25+ specialized Model Context Protocol (MCP) servers to create a powerful, extensible agent system capable of controlling both digital environments and physical devices in your home.
 
 ## 🌟 Features
