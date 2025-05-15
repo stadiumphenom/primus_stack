@@ -15,7 +15,7 @@ Project NOVA (Networked Orchestration of Virtual Agents) is a comprehensive, sel
 
 Project NOVA uses a hub-and-spoke architecture where the main router agent analyzes user requests and delegates to specialized agents:
 
-![Alt text](screenshots/architecture.png.png)
+https://github.com/dujonwalker/project-nova/blob/main/screenshots/architecture.png?raw=true
 
 ## 📚 Reference Guide
 
