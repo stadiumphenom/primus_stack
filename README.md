@@ -70,8 +70,6 @@ Project NOVA includes over 25 specialized agents across multiple domains:
 - [Home Assistant Agent](https://github.com/voska/hass-mcp) - Controls smart home devices through Home Assistant
 - [Prometheus Agent](https://github.com/pab1it0/prometheus-mcp-server) - Queries and analyzes metrics from Prometheus monitoring
 
-![Chat Interface](https://github.com/dujonwalker/project-nova/blob/main/screenshots/chat-interface.png)
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -129,6 +127,10 @@ This repository contains all the tools and instructions needed to build your own
    - The router will analyze your requests and direct them to the appropriate specialized agents
 
 > **Note:** The repository is structured to make replication as straightforward as possible. You can choose to implement all agents or just the ones you need.
+
+<p align="center">
+  <img src="https://github.com/dujonwalker/project-nova/blob/main/screenshots/chat-interface.png?raw=true" alt="Chat Interface" width="50%">
+</p>
 
 ## 📁 Repository Structure
 
