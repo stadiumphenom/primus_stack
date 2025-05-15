@@ -1,0 +1,26 @@
+services:
+  triliumnext-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: triliumnext-mcp
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    environment:
+      - HOST_IP=${HOST_IP}
+      - SSE_PORT=${SSE_PORT}
+      - TRILIUM_API_URL=${TRILIUM_API_URL}
+      - TRILIUM_API_TOKEN=${TRILIUM_API_TOKEN}
+    volumes:
+      - triliumnext-mcp-data:/app/data
+    networks:
+      - triliumnext-network
+
+volumes:
+  triliumnext-mcp-data:
+    name: triliumnext-mcp-data
+
+networks:
+  triliumnext-network:
+    name: triliumnext-network

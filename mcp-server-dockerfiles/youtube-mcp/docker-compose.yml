@@ -1,0 +1,12 @@
+services:
+  mcp-youtube:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp-youtube
+    environment:
+      - HOST_IP=${HOST_IP}
+      - SSE_PORT=${SSE_PORT}
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    restart: unless-stopped

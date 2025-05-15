@@ -1,0 +1,15 @@
+services:
+  reaper-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reaper-mcp-server-qa
+    restart: unless-stopped
+    environment:
+      - HOST_IP=${HOST_IP}
+      - SSE_PORT=${SSE_PORT}
+      - REAPER_PROJECTS_DIR=${REAPER_PROJECTS_DIR}
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    volumes:
+      - ${REAPER_PROJECTS_DIR_HOST}:${REAPER_PROJECTS_DIR}

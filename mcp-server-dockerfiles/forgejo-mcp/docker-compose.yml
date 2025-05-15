@@ -1,0 +1,15 @@
+services:
+  forgejo-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: forgejo-mcp
+    environment:
+      - GITEA_HOST=${GITEA_HOST:-https://forgejo.org}
+      - GITEA_ACCESS_TOKEN=${GITEA_ACCESS_TOKEN:-your_access_token_here}
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
+    command: ["-t", "sse", "--port", "8989", "--host", "${GITEA_HOST:-https://forgejo.org}"]
+    # If you want to enable debug mode, add "-d" to the command
+    # command: ["-t", "sse", "--port", "8989", "--host", "${GITEA_HOST:-https://forgejo.org}", "-d"]

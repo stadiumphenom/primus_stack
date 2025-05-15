@@ -1,0 +1,22 @@
+services:
+  blinko-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blinko-mcp-server
+    restart: unless-stopped
+    environment:
+      - HOST_IP=${HOST_IP}
+      - SSE_PORT=${SSE_PORT}
+      - BLINKO_DOMAIN=${BLINKO_DOMAIN}
+      - BLINKO_API_KEY=${BLINKO_API_KEY}
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - blinko-network
+
+networks:
+  blinko-network:
+    driver: bridge

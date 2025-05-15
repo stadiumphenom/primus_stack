@@ -1,0 +1,16 @@
+services:
+  siyuan-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: siyuan-mcp
+    environment:
+      - SIYUAN_TOKEN=<YOUR_SIYUAN_TOKEN>
+      - SIYUAN_SERVER=<YOUR_SIYUAN_SERVER_URL>
+      - SSE_PORT=<YOUR_SSE_PORT>
+      - SSE_HOST=0.0.0.0
+      - N8N_HOST=<YOUR_N8N_IP>
+      - N8N_PORT=<YOUR_N8N_PORT>
+    ports:
+      - "<YOUR_SSE_PORT>:<YOUR_SSE_PORT>"
+    restart: unless-stopped

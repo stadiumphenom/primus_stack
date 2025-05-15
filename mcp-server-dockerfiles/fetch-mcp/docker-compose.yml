@@ -1,0 +1,18 @@
+services:
+  fetch-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fetch-mcp
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT:-3020}:${SSE_PORT:-3020}"
+    environment:
+      - HOST_IP=${HOST_IP:-192.168.50.196}
+      - SSE_PORT=${SSE_PORT:-3020}
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge

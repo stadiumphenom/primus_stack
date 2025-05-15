@@ -1,0 +1,21 @@
+services:
+  reaper-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reaper-mcp-server
+    restart: unless-stopped
+    environment:
+      - REAPER_HOST=${REAPER_HOST:-<YOUR_REAPER_IP>}
+      - REAPER_SEND_PORT=${REAPER_SEND_PORT:-<YOUR_REAPER_SEND_PORT>}
+      - REAPER_RECEIVE_PORT=${REAPER_RECEIVE_PORT:-<YOUR_REAPER_RECEIVE_PORT>}
+      - SSE_PORT=${SSE_PORT:-<YOUR_SSE_PORT>}
+      - DEBUG_MODE=${DEBUG_MODE:-false}
+    ports:
+      - "${HOST_IP:-<YOUR_HOST_IP>}:${SSE_PORT:-<YOUR_SSE_PORT>}:${SSE_PORT:-<YOUR_SSE_PORT>}"
+      - "${HOST_IP:-<YOUR_HOST_IP>}:${REAPER_RECEIVE_PORT:-<YOUR_REAPER_RECEIVE_PORT>}:${REAPER_RECEIVE_PORT:-<YOUR_REAPER_RECEIVE_PORT>}/udp"
+    networks:
+      - reaper-network
+networks:
+  reaper-network:
+    driver: bridge

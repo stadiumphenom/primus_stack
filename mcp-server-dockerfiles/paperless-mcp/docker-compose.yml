@@ -1,0 +1,16 @@
+services:
+  paperless-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: paperless-mcp
+    environment:
+      - PAPERLESS_URL=<YOUR_PAPERLESS_URL>
+      - PAPERLESS_TOKEN=<YOUR_PAPERLESS_TOKEN>
+      - SSE_PORT=<YOUR_SSE_PORT>
+      - SSE_HOST=0.0.0.0
+      - N8N_HOST=<YOUR_N8N_IP>
+      - N8N_PORT=<YOUR_N8N_PORT>
+    ports:
+      - "<YOUR_SSE_PORT>:<YOUR_SSE_PORT>"
+    restart: unless-stopped

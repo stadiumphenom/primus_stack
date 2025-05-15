@@ -1,0 +1,12 @@
+services:
+  outline-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: outline-mcp
+    environment:
+      - OUTLINE_API_KEY=${OUTLINE_API_KEY}
+      - OUTLINE_API_URL=${OUTLINE_API_URL:-https://app.getoutline.com/api}
+    ports:
+      - "7070:6060"
+    restart: unless-stopped

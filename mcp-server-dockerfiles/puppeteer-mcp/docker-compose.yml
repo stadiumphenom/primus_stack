@@ -1,0 +1,27 @@
+services:
+  puppeteer-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: puppeteer-mcp-server
+    restart: unless-stopped
+    environment:
+      - SSE_HOST=${SSE_HOST:-0.0.0.0}
+      - SSE_PORT=3007
+      - DOCKER_CONTAINER=true
+      - "PUPPETEER_LAUNCH_OPTIONS={\"headless\": true}"
+      - ALLOW_DANGEROUS=${ALLOW_DANGEROUS:-false}
+    ports:
+      - "3007:3007"
+    volumes:
+      - mcp_puppeteer_data:/app/data
+    networks:
+      - mcp_network
+
+networks:
+  mcp_network:
+    driver: bridge
+
+volumes:
+  mcp_puppeteer_data:
+    driver: local

@@ -1,0 +1,23 @@
+services:
+  prometheus-mcp-server:
+    container_name: prometheus-mcp-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    ports:
+      - "${SSE_PORT:-3014}:${SSE_PORT:-3014}"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${SSE_PORT:-3014}/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge

@@ -1,0 +1,22 @@
+services:
+  docspace-mcp-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docspace-mcp-bridge
+    environment:
+      # DocSpace connection
+      - DOCSPACE_BASE_URL=http://192.168.49.91
+      - DOCSPACE_API_KEY=${DOCSPACE_API_KEY}
+      
+      # Required URL settings
+      - DOCSPACE_ORIGIN=http://192.168.49.91
+      
+      # Optional settings
+      - DOCSPACE_USER_AGENT=${DOCSPACE_USER_AGENT}
+      - DOCSPACE_AUTH_TOKEN=${DOCSPACE_AUTH_TOKEN}
+      - DOCSPACE_USERNAME=${DOCSPACE_USERNAME}
+      - DOCSPACE_PASSWORD=${DOCSPACE_PASSWORD}
+    ports:
+      - "3001:3001"
+    restart: unless-stopped

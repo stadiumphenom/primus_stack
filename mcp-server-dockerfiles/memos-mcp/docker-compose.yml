@@ -1,0 +1,19 @@
+services:
+  mcp-memos-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp-memos-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge

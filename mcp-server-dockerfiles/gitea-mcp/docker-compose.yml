@@ -1,0 +1,21 @@
+services:
+  gitea-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gitea-mcp-server
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    environment:
+      - GITEA_HOST=${GITEA_HOST}
+      - GITEA_ACCESS_TOKEN=${GITEA_ACCESS_TOKEN}
+      - GITEA_INSECURE=${GITEA_INSECURE}
+      - SSE_PORT=${SSE_PORT}
+      - DEBUG_MODE=${DEBUG_MODE}
+    volumes:
+      - gitea-mcp-logs:/home/gitea-mcp/.gitea-mcp
+
+volumes:
+  gitea-mcp-logs:
+    driver: local

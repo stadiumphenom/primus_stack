@@ -1,0 +1,27 @@
+services:
+  langfuse-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langfuse-mcp-server
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    environment:
+      - HOST_IP=${HOST_IP}
+      - SSE_PORT=${SSE_PORT}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
+      - LANGFUSE_BASEURL=${LANGFUSE_BASEURL}
+    volumes:
+      - langfuse-mcp-data:/app/data
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge
+
+volumes:
+  langfuse-mcp-data:
+    driver: local

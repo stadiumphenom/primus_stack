@@ -1,0 +1,18 @@
+services:
+  obs-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: obs-mcp-server
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT:-3012}:${SSE_PORT:-3012}"
+    environment:
+      - HOST_IP=${HOST_IP:-0.0.0.0}
+      - SSE_PORT=${SSE_PORT:-3012}
+      - OBS_WEBSOCKET_URL=${OBS_WEBSOCKET_URL:-ws://host.docker.internal:4455}
+      - OBS_WEBSOCKET_PASSWORD=${OBS_WEBSOCKET_PASSWORD:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./logs:/app/logs

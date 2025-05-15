@@ -1,0 +1,26 @@
+services:
+  hass-mcp-sse:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hass-mcp-sse
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    environment:
+      - HA_URL=${HA_URL}
+      - HA_TOKEN=${HA_TOKEN}
+      - SSE_PORT=${SSE_PORT}
+      - HOST_IP=${HOST_IP}
+    volumes:
+      - hass-mcp-data:/data
+    networks:
+      - hass-mcp-network
+
+networks:
+  hass-mcp-network:
+    driver: bridge
+
+volumes:
+  hass-mcp-data:
+    driver: local

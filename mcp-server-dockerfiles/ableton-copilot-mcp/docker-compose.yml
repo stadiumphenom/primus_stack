@@ -1,0 +1,22 @@
+services:
+  ableton-mcp:
+    container_name: ableton-mcp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    volumes:
+      - ./data:/data
+    environment:
+      - SSE_PORT=${SSE_PORT}
+      - HOST_IP=${HOST_IP}
+      - ABLETON_IP=${ABLETON_IP}
+      - BASE_PATH=${BASE_PATH}
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge

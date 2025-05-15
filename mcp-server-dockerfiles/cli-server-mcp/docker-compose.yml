@@ -1,0 +1,23 @@
+services:
+  cli-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cli-mcp-server
+    environment:
+      - HOST_IP=${HOST_IP:-0.0.0.0}
+      - SSE_PORT=${SSE_PORT:-3009}
+      - ALLOWED_DIR=${ALLOWED_DIR:-/data}
+      - ALLOWED_COMMANDS=${ALLOWED_COMMANDS:-all}
+      - ALLOWED_FLAGS=${ALLOWED_FLAGS:-all}
+      - MAX_COMMAND_LENGTH=${MAX_COMMAND_LENGTH:-4096}
+      - COMMAND_TIMEOUT=${COMMAND_TIMEOUT:-60}
+      - ALLOW_SHELL_OPERATORS=${ALLOW_SHELL_OPERATORS:-true}
+    ports:
+      - "${SSE_PORT:-3009}:${SSE_PORT:-3009}"
+    volumes:
+      - ${HOST_DATA_DIR:-./data}:${ALLOWED_DIR:-/data}
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    # Add Docker privileges - in a dedicated VM, this is less of a security concern
+    privileged: true

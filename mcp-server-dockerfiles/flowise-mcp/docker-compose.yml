@@ -1,0 +1,36 @@
+services:
+  mcp-flowise:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp-flowise-sse
+    restart: unless-stopped
+    ports:
+      - "${SSE_PORT}:${SSE_PORT}"
+    environment:
+      - FLOWISE_API_KEY=${FLOWISE_API_KEY}
+      - FLOWISE_API_ENDPOINT=${FLOWISE_API_ENDPOINT}
+      - HOST_IP=${HOST_IP}
+      - SSE_PORT=${SSE_PORT}
+      # Optional MCP-Flowise configuration - uncomment as needed
+      # - FLOWISE_SIMPLE_MODE=${FLOWISE_SIMPLE_MODE}
+      # - FLOWISE_CHATFLOW_ID=${FLOWISE_CHATFLOW_ID}
+      # - FLOWISE_ASSISTANT_ID=${FLOWISE_ASSISTANT_ID}
+      # - FLOWISE_CHATFLOW_DESCRIPTION=${FLOWISE_CHATFLOW_DESCRIPTION}
+      # - FLOWISE_WHITELIST_ID=${FLOWISE_WHITELIST_ID}
+      # - FLOWISE_BLACKLIST_ID=${FLOWISE_BLACKLIST_ID}
+      # - FLOWISE_WHITELIST_NAME_REGEX=${FLOWISE_WHITELIST_NAME_REGEX}
+      # - FLOWISE_BLACKLIST_NAME_REGEX=${FLOWISE_BLACKLIST_NAME_REGEX}
+      # - DEBUG=${DEBUG}
+    volumes:
+      - mcp-flowise-data:/app/data
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge
+
+volumes:
+  mcp-flowise-data:
+    driver: local
