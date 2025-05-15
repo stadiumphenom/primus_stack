@@ -1,5 +1,5 @@
 # Puppeteer MCP Server Docker
-A Docker containerized version of the [Model Context Protocol Puppeteer Server](https://github.com/modelcontextprotocol/server-puppeteer), providing browser automation capabilities to Large Language Models (LLMs) through the [Model Context Protocol](https://modelcontextprotocol.io/).
+A Docker containerized version of the [Model Context Protocol Puppeteer Server](https://github.com/modelcontextprotocol/servers/tree/main/src/puppeteer), providing browser automation capabilities to Large Language Models (LLMs) through the [Model Context Protocol](https://modelcontextprotocol.io/).
 ## What is this?
 This project containerizes the Puppeteer MCP Server, making it easier to:
 - Deploy browser automation capabilities in Docker environments
