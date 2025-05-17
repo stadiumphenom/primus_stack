@@ -205,6 +205,11 @@ project-nova/
 - [nerding-io](https://github.com/nerding-io/n8n-nodes-mcp) for their pioneering work on n8n-nodes-mcp that inspired this project
 - All the open-source projects that make the specialized agents possible
 
+## 📚 Additional Resources
+
+- [Project NOVA: Detailed Write-up](https://dev.dujon.ca/project-nova/) - Comprehensive blog post with additional insights and implementation details
+- For questions or support, please open an issue in this repository
+
 ## 🔍 MCP Resources
 
 If you're looking to expand your Project NOVA with additional agents, here are some valuable resources for finding MCP servers:
