@@ -19,8 +19,8 @@ BLINKO_API_KEY=<YOUR_BLINKO_API_KEY>
 ```
 - `HOST_IP`: The IP address of the host where the MCP server will run
 - `SSE_PORT`: The port on which the SSE endpoint will be exposed
-- `BLINKO_DOMAIN`: Your Blinko service domain (without http/https)
-- `BLINKO_API_KEY`: Your Blinko API key
+- `BLINKO_DOMAIN`: Your Blinko service domain with port (e.g., `192.168.1.100:8443`)
+- `BLINKO_API_KEY`: Your Blinko API key (must be a full-permission/superadmin key)
 ### Modifying Environment Variables
 To modify any environment variables:
 1. Edit the `.env` file with your changes
@@ -73,17 +73,57 @@ The Blinko MCP server provides the following tools:
 - No unnecessary services are installed or running
 - The container uses a non-root user for running the application
 - The logs directory is mounted as a volume for persistence and external access
+## Important: HTTPS/SSL Requirements
+
+**⚠️ CRITICAL: The MCP server requires HTTPS to connect to Blinko.**
+
+The underlying `mcp-server-blinko` package hardcodes HTTPS in its API calls. This means:
+
+- **Blinko MUST be accessible via HTTPS** for the MCP server to work
+- **HTTP-only Blinko instances will fail** with `fetch failed` errors
+- **Self-signed certificates are supported** - the docker-compose.yml includes `NODE_TLS_REJECT_UNAUTHORIZED=0` to bypass certificate verification
+
+### Setting Up HTTPS for Blinko
+
+If your Blinko instance only supports HTTP, you have several options:
+
+1. **Use a reverse proxy** (recommended):
+   - Set up Traefik, Nginx, or Caddy with SSL termination
+   - Point `BLINKO_DOMAIN` to the HTTPS proxy (e.g., `192.168.1.100:8443`)
+
+2. **Use self-signed certificates**:
+   - Generate self-signed certs for your Blinko instance
+   - The MCP server will accept them due to `NODE_TLS_REJECT_UNAUTHORIZED=0`
+
+3. **Use a proper SSL certificate**:
+   - Set up Let's Encrypt or use a commercial certificate
+   - Point `BLINKO_DOMAIN` to your HTTPS endpoint
+
+### API Key Requirements
+
+- Use a **full-permission API key** (superadmin role)
+- **Low-permission tokens will NOT work** - they only allow note creation, not searching/reading
+- Generate the API key from Blinko Settings → API Keys
+
 ## Troubleshooting
 ### Common Issues
-1. **Connection Refused**:
+1. **`fetch failed` errors**:
+   - **Most common cause**: Blinko is not accessible via HTTPS
+   - Ensure your `BLINKO_DOMAIN` points to an HTTPS endpoint
+   - Verify SSL is working: `curl -k https://YOUR_BLINKO_DOMAIN/api/v1/note/list`
+   
+2. **Connection Refused**:
    - Verify that the container is running: `docker compose ps`
    - Check that port <YOUR_SSE_PORT> is exposed: `docker compose logs -f`
-2. **Authorization Failed**:
+   
+3. **Authorization Failed**:
    - Verify your Blinko API key in the `.env` file
+   - Ensure you're using a full-permission (superadmin) API key, not a low-permission token
    - Restart the container after updating the `.env` file
-3. **MCP Server Errors**:
+   
+4. **MCP Server Errors**:
    - Check the container logs: `docker compose logs -f`
-   - Verify that the `BLINKO_DOMAIN` is correct
+   - Verify that the `BLINKO_DOMAIN` is correct and accessible via HTTPS
 ### Additional Help
 For more information about:
 - Blinko MCP Server: [GitHub Repository](https://github.com/BryceWG/mcp-server-blinko)

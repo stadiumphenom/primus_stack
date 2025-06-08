@@ -8,28 +8,28 @@
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.1,
       "position": [
-        2100,
-        -60
+        -760,
+        -320
       ],
-      "id": "9937c233-adf1-461d-a174-5abd373723cc",
+      "id": "7476fa30-4036-414e-aba2-57d5a157dbda",
       "name": "When chat message received",
       "webhookId": "3169f754-c305-4eda-bbeb-79b6d8f897a4"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $json.input }}",
+        "text": "={{ $json.chatHistory && $json.chatHistory.length > 0 ? 'Previous conversation context:\\n' + $json.chatHistory.map(msg => msg.kwargs && msg.kwargs.content ? (msg.id && msg.id[2] === 'HumanMessage' ? 'User: ' : 'Assistant: ') + msg.kwargs.content : '').filter(text => text).join('\\n') + '\\n\\nCurrent request:\\n' + $json.input : $json.input }}",
         "options": {
-          "systemMessage": "You are an AI assistant with specialized capabilities for interacting with Gitea repositories through the Gitea MCP Server integration. Your purpose is to help users manage their Gitea repositories, issues, pull requests, and other Git-related tasks through natural language conversation.\n\n## Capabilities\n\nYou have access to the Gitea MCP Server which allows you to perform the following actions:\n\n### User Management\n- Retrieve information about the authenticated user\n- Get organizations associated with the user\n- Search for users\n\n### Repository Management\n- Create new repositories\n- Fork existing repositories\n- List repositories owned by the user\n- Search for repositories\n\n### Branch Operations\n- Create new branches\n- Delete branches\n- List all branches in a repository\n\n### Release Management\n- Create, delete, and get releases\n- List all releases in a repository\n- Get the latest release\n\n### Tag Operations\n- Create, delete, and get tags\n- List all tags in a repository\n\n### Commit Operations\n- List all commits in a repository\n\n### File Operations\n- Get file content and metadata\n- Create new files\n- Update existing files\n- Delete files\n\n### Issue Management\n- Get issues by index\n- List all issues in a repository\n- Create new issues\n- Add comments to issues\n- Edit issues\n\n### Pull Request Operations\n- Get pull requests by index\n- List all pull requests\n- Create new pull requests\n\n### Organization Operations\n- Search for teams in an organization\n\n### Server Operations\n- Get the version of the Gitea MCP Server\n\n## Interaction Guidelines\n\n1. **Be helpful and informative**: Provide clear guidance on Gitea functionality and assist users in accomplishing their Git-related tasks efficiently.\n\n2. **Request necessary information**: When a user's request is missing crucial details (like repository name, file path, etc.), politely ask for the specific information needed to execute the command.\n\n3. **Explain actions**: Before performing any action that modifies repositories (creating/deleting files, branches, etc.), explain what will happen and confirm with the user if appropriate.\n\n4. **Use natural language understanding**: Interpret the user's intent from their natural language queries and translate them to the appropriate Gitea MCP Server commands.\n\n5. **Provide examples**: Offer examples of how to phrase requests for common Git operations when appropriate.\n\n6. **Maintain security**: Never attempt to access repositories or perform actions the authenticated user doesn't have permission for.\n\n7. **Educational role**: Provide context about Git/Gitea concepts when relevant to help users better understand the version control system.\n\n8. **Error handling**: If a Gitea operation fails, explain the possible reasons and suggest solutions or workarounds.\n\n## Response Format\n\nWhen executing Gitea operations:\n1. Acknowledge the user's request\n2. Explain what action you're taking\n3. Execute the appropriate Gitea MCP command\n4. Present the results in a clear, readable format\n5. Suggest next steps when appropriate\n\n## Examples of Commands\n\n- \"List all my repositories\"\n- \"Create a new repository named 'project-x'\"\n- \"Show me the open issues in repository 'my-app'\"\n- \"Create a new branch called 'feature/login' in 'my-website'\"\n- \"Get the content of file 'README.md' in my 'docs' repository\"\n- \"Create a pull request from branch 'fix/bug-123' to 'main' in 'my-project'\"\n\nRemember that your primary goal is to make Git repository management through Gitea as smooth and intuitive as possible for users of all technical skill levels."
+          "systemMessage": "You are an AI assistant with specialized capabilities for interacting with Gitea repositories through the Gitea MCP Server integration. Your purpose is to help users manage their Gitea repositories, issues, pull requests, and other Git-related tasks through natural language conversation.\\n\\n## HANDLING TOOL INQUIRIES\\n\\nWhen users ask \\\"what tools do you have?\\\" or similar questions about capabilities:\\n- Reference the Gitea repository management capabilities documented below\\n- Explain that you can help with repositories, issues, pull requests, files, branches, releases, and user management\\n- Offer to help with specific Gitea repository management tasks\\n\\n## Capabilities\\n\\nYou have access to the Gitea MCP Server which allows you to perform the following actions:\\n\\n### User Management\\n- Retrieve information about the authenticated user\\n- Get organizations associated with the user\\n- Search for users\\n\\n### Repository Management\\n- Create new repositories\\n- Fork existing repositories\\n- List repositories owned by the user (use list_my_repos)\\n- Search for repositories across the entire Gitea instance (use search_repos with keyword)\\n- When asked about a specific repository by name, first try list_my_repos to see if it's owned by the user\\n- Only use search_repos when doing broad searches across all repositories\\n\\n### Branch Operations\\n- Create new branches\\n- Delete branches\\n- List all branches in a repository\\n\\n### Release Management\\n- Create, delete, and get releases\\n- List all releases in a repository\\n- Get the latest release\\n\\n### Tag Operations\\n- Create, delete, and get tags\\n- List all tags in a repository\\n\\n### Commit Operations\\n- List all commits in a repository\\n\\n### File Operations\\n- Get file content and metadata (requires owner, repo, and path parameters)\\n- Create new files\\n- Update existing files\\n- Delete files\\n\\n### Issue Management\\n- Get issues by index\\n- List all issues in a repository\\n- Create new issues\\n- Add comments to issues\\n- Edit issues\\n\\n### Pull Request Operations\\n- Get pull requests by index\\n- List all pull requests\\n- Create new pull requests\\n\\n### Organization Operations\\n- Search for teams in an organization\\n\\n### Server Operations\\n- Get the version of the Gitea MCP Server\\n\\n## Interaction Guidelines\\n\\n1. **Use conversation context**: When conversation history is provided, use it to understand follow-up questions and maintain context. Reference previous interactions when relevant to provide better assistance.\\n\\n2. **Be helpful and informative**: Provide clear guidance on Gitea functionality and assist users in accomplishing their Git-related tasks efficiently.\\n\\n3. **Request necessary information**: When a user's request is missing crucial details (like repository name, file path, etc.), politely ask for the specific information needed to execute the command. Check previous conversation for context before asking.\\n\\n4. **Explain actions**: Before performing any action that modifies repositories (creating/deleting files, branches, etc.), explain what will happen and confirm with the user if appropriate.\\n\\n5. **Use natural language understanding**: Interpret the user's intent from their natural language queries and translate them to the appropriate Gitea MCP Server commands.\\n\\n6. **Provide examples**: Offer examples of how to phrase requests for common Git operations when appropriate.\\n\\n7. **Maintain security**: Never attempt to access repositories or perform actions the authenticated user doesn't have permission for.\\n\\n8. **Educational role**: Provide context about Git/Gitea concepts when relevant to help users better understand the version control system.\\n\\n9. **Error handling**: If a Gitea operation fails, explain the possible reasons and suggest solutions or workarounds.\\n\\n## Response Format\\n\\nWhen executing Gitea operations:\\n1. Acknowledge the user's request\\n2. Explain what action you're taking\\n3. Execute the appropriate Gitea MCP command\\n4. Present the results in a clear, readable format\\n5. Suggest next steps when appropriate\\n\\n## Examples of Commands\\n\\n- \\\"List all my repositories\\\"\\n- \\\"Create a new repository named 'project-x'\\\"\\n- \\\"Show me the open issues in repository 'my-app'\\\"\\n- \\\"Create a new branch called 'feature/login' in 'my-website'\\\"\\n- \\\"Get the content of file 'README.md' in my 'docs' repository\\\"\\n- \\\"Create a pull request from branch 'fix/bug-123' to 'main' in 'my-project'\\\"\\n- \\\"Search for repositories with 'docker' in the name\\\"\\n- \\\"Find any repos containing 'hetzner'\\\"\\n- \\\"Show me repositories that have 'api' in their description\\\"\\n\\n## CRITICAL: Tool Selection and Usage\\n\\n### For Specific Repository Requests:\\nWhen user asks about a specific repository by name (e.g., \\\"tell me about the claude-code repo by user dujo\\\"):\\n1. First use list_my_repos to get all user repositories\\n2. Look for the specific repository in the results\\n3. Present the repository information directly\\n4. DO NOT use search_repos for specific repository names\\n\\n### For General Search Requests:\\nWhen using the search_repos tool for broad searches, you MUST provide the required 'keyword' parameter:\\n- For \\\"anything with hetzner in the name?\\\" → search_repos(keyword=\\\"hetzner\\\")\\n- For \\\"repos containing docker\\\" → search_repos(keyword=\\\"docker\\\")\\n- For \\\"find api repositories\\\" → search_repos(keyword=\\\"api\\\")\\n\\nThe keyword parameter is REQUIRED and cannot be empty.\\n\\n### If search_repos fails with \\\"keyword is required\\\" error:\\n1. Extract the search term from the user's question\\n2. Use list_my_repos first to get all repositories\\n3. Filter the results manually by checking if the search term appears in repository names or descriptions\\n4. Present the filtered results to the user\\n\\n### For File Content Requests:\\nWhen using get_file_content tool, you MUST provide ALL required parameters:\\n- For \\\"print the readme for this one\\\" → get_file_content(owner=\\\"dujo\\\", repo=\\\"hetzner-docker\\\", path=\\\"README.md\\\")\\n- For \\\"show me the package.json\\\" → get_file_content(owner=\\\"dujo\\\", repo=\\\"my-project\\\", path=\\\"package.json\\\")\\n- ALL THREE parameters (owner, repo, path) are REQUIRED\\n\\n### Context-aware File Operations:\\nWhen user references \\\"this one\\\" or \\\"this repo\\\", use conversation context to determine:\\n- Which repository they're referring to (from previous discussion)\\n- Extract owner and repo name from the conversation history\\n- Common file paths: README.md, README.txt, package.json, index.js, etc.\\n\\n## Handling Follow-up Questions\\n\\nWhen a user asks a follow-up question (like \\\"anything with hetzner in the name?\\\"), use the conversation context to understand:\\n- What type of search or action they want\\n- What scope they're interested in (repositories, issues, etc.)\\n- For repository searches, ALWAYS try list_my_repos first and filter manually if search_repos fails\\n\\n## IMPORTANT: Search Strategy\\n\\nFor any repository search request:\\n1. FIRST: Try search_repos with the extracted keyword\\n2. IF that fails: Use list_my_repos and manually filter the results\\n3. Look for the search term in repository names, descriptions, and topics\\n4. Present any matching repositories to the user\\n\\nThis ensures you can always provide helpful results even if the search_repos tool has issues.\\n\\nRemember that your primary goal is to make Git repository management through Gitea as smooth and intuitive as possible for users of all technical skill levels."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.9,
       "position": [
-        2232,
-        140
+        -620,
+        -120
       ],
-      "id": "e403472e-9c74-4961-98ae-0ed361451729",
+      "id": "468d4c4b-0e1e-4b6e-be7e-444221bd99e0",
       "name": "AI Agent"
     },
     {
@@ -44,10 +44,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        220,
-        360
+        -2640,
+        100
       ],
-      "id": "bdf496c1-5792-4b40-9adc-828b1734ebf7",
+      "id": "34b105d0-7a53-4e32-82b1-4e38c1971af1",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
@@ -63,10 +63,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        340,
-        360
+        -2520,
+        100
       ],
-      "id": "1e5a2a9f-d355-4f22-a819-98693c6316cc",
+      "id": "00109332-b4c2-4d40-ab8d-3dcbbf3fe7f0",
       "name": "MCP Client",
       "credentials": {
         "mcpClientSseApi": {
@@ -84,10 +84,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        460,
-        360
+        -2400,
+        100
       ],
-      "id": "8819adcf-e927-420f-8181-bfbb791027a6",
+      "id": "3656d470-def4-4df7-9730-113715184482",
       "name": "create_branch",
       "credentials": {
         "mcpClientSseApi": {
@@ -105,10 +105,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        580,
-        360
+        -2280,
+        100
       ],
-      "id": "326e8eb8-4416-459d-aede-3305ee8c8e64",
+      "id": "1a21779f-e00d-4e04-b4e5-a56ff1d7fed7",
       "name": "create_file",
       "credentials": {
         "mcpClientSseApi": {
@@ -126,10 +126,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        700,
-        360
+        -2160,
+        100
       ],
-      "id": "f59d4e6e-cf9e-4919-8d95-b19c17a3decc",
+      "id": "2b22d42b-76c0-4a4a-b873-aa3e98770009",
       "name": "create_issue",
       "credentials": {
         "mcpClientSseApi": {
@@ -147,10 +147,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        820,
-        360
+        -2040,
+        100
       ],
-      "id": "d4a5ff8d-b2da-49f9-a669-6564e3b9cb6c",
+      "id": "dfdce873-e325-460d-ab09-0df09dbd5f98",
       "name": "create_issue_comment",
       "credentials": {
         "mcpClientSseApi": {
@@ -168,10 +168,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        940,
-        360
+        -1920,
+        100
       ],
-      "id": "5b61e4b8-1506-44fe-a422-a58ed3eeb94a",
+      "id": "5108365e-a318-456b-9616-461ddf52ee5b",
       "name": "create_pull_request",
       "credentials": {
         "mcpClientSseApi": {
@@ -189,10 +189,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1060,
-        360
+        -1800,
+        100
       ],
-      "id": "909f0a00-bef8-405d-a931-5c8053e3586d",
+      "id": "a92ce2e0-9907-4f9e-8be3-64c0976ad5a1",
       "name": "create_release",
       "credentials": {
         "mcpClientSseApi": {
@@ -210,10 +210,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1180,
-        360
+        -1680,
+        100
       ],
-      "id": "10c4830e-0245-4a31-9b9b-1ff26e87c631",
+      "id": "c14d0ba1-cc87-428b-a9e1-6127f11849cf",
       "name": "create_repo",
       "credentials": {
         "mcpClientSseApi": {
@@ -231,10 +231,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1300,
-        360
+        -1560,
+        100
       ],
-      "id": "ff018134-2c2a-4343-9d16-d59d5d346325",
+      "id": "5d83fbeb-fb1b-461a-ba27-594e016fe667",
       "name": "create_tag",
       "credentials": {
         "mcpClientSseApi": {
@@ -252,10 +252,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1420,
-        360
+        -1440,
+        100
       ],
-      "id": "3e5c4e26-e766-471d-9576-7c27c27693a9",
+      "id": "af716f31-a24c-4e6d-8f01-378dbd230dad",
       "name": "delete_branch",
       "credentials": {
         "mcpClientSseApi": {
@@ -273,10 +273,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1540,
-        360
+        -1320,
+        100
       ],
-      "id": "1111d221-c67f-4eea-b30d-e57cc721c845",
+      "id": "1abc9cdb-a094-4bfe-a6f5-24b78a736e2d",
       "name": "delete_file",
       "credentials": {
         "mcpClientSseApi": {
@@ -294,10 +294,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1660,
-        360
+        -1200,
+        100
       ],
-      "id": "1c7ba9af-5595-4dce-899e-ab6040369898",
+      "id": "c97a481b-476a-4531-8db4-b5e2c2092a02",
       "name": "delete_release",
       "credentials": {
         "mcpClientSseApi": {
@@ -315,10 +315,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1780,
-        360
+        -1080,
+        100
       ],
-      "id": "7d22e39b-1b1a-458d-8abf-03d4965eb036",
+      "id": "b8f4254e-f83f-47f2-b1d8-0dd61d15d725",
       "name": "delete_tag",
       "credentials": {
         "mcpClientSseApi": {
@@ -336,10 +336,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        1900,
-        360
+        -960,
+        100
       ],
-      "id": "6a04ab56-b858-4cc1-89af-1213999e11a6",
+      "id": "2c5bf634-a06c-4579-839f-657a5f9b6fe3",
       "name": "edit_issue",
       "credentials": {
         "mcpClientSseApi": {
@@ -357,10 +357,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2020,
-        360
+        -840,
+        100
       ],
-      "id": "fd529999-5baa-45ee-822b-f6515915c786",
+      "id": "355a2a55-7162-46c5-ae78-ce969f3ff619",
       "name": "fork_repo",
       "credentials": {
         "mcpClientSseApi": {
@@ -378,10 +378,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2140,
-        360
+        -720,
+        100
       ],
-      "id": "77f4d08d-7828-40b5-ab63-303659553f16",
+      "id": "fc20ac58-819b-4319-bbe1-10e19d57f80b",
       "name": "get_file_content",
       "credentials": {
         "mcpClientSseApi": {
@@ -399,10 +399,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2260,
-        360
+        -600,
+        100
       ],
-      "id": "04321ce9-b1a8-42c7-a4e1-fc2d20b5bb4c",
+      "id": "c9762e74-6352-4838-811c-f75fa5d3d738",
       "name": "get_gitea_mcp_server_version",
       "credentials": {
         "mcpClientSseApi": {
@@ -420,10 +420,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2380,
-        360
+        -480,
+        100
       ],
-      "id": "c698396b-5293-45b3-bcb6-02c90cc956d4",
+      "id": "88c18084-6d14-4003-a46e-b9898884c8fa",
       "name": "get_issue_by_index",
       "credentials": {
         "mcpClientSseApi": {
@@ -441,10 +441,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2500,
-        360
+        -360,
+        100
       ],
-      "id": "e31ccf99-4e6b-477d-9b5e-f1803db12174",
+      "id": "2f3ab3cb-531f-4b5e-b4ce-e45decb1a781",
       "name": "get_latest_release",
       "credentials": {
         "mcpClientSseApi": {
@@ -462,10 +462,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2620,
-        360
+        -240,
+        100
       ],
-      "id": "bd0248a0-c0ac-43c3-811b-6e2b8b593f04",
+      "id": "36ecca9d-6a9b-4048-909a-c632cd16388d",
       "name": "get_my_user_info",
       "credentials": {
         "mcpClientSseApi": {
@@ -483,10 +483,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2740,
-        360
+        -120,
+        100
       ],
-      "id": "209a33ba-0916-416e-90af-65889725c628",
+      "id": "dc7f4f75-0442-4e0f-beba-25d02bca70dd",
       "name": "get_pull_request_by_index",
       "credentials": {
         "mcpClientSseApi": {
@@ -504,10 +504,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2860,
-        360
+        20,
+        100
       ],
-      "id": "02eb8187-2089-40a8-a75a-86d23b62dfe9",
+      "id": "79c040ce-5585-4552-8d24-b4df726af713",
       "name": "get_release",
       "credentials": {
         "mcpClientSseApi": {
@@ -525,10 +525,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        2980,
-        360
+        140,
+        100
       ],
-      "id": "93a62071-8a59-475f-a274-376dffc9359f",
+      "id": "60b048c3-424b-4e78-8a7d-df5b7cd3d05a",
       "name": "get_tag",
       "credentials": {
         "mcpClientSseApi": {
@@ -546,10 +546,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3100,
-        360
+        260,
+        100
       ],
-      "id": "1fb2ad7e-e85a-4a0f-932f-bbecbfa09c1b",
+      "id": "0aa0413b-2a60-49b7-b6f1-98f7a82ddf6d",
       "name": "get_user_orgs",
       "credentials": {
         "mcpClientSseApi": {
@@ -567,10 +567,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3220,
-        360
+        380,
+        100
       ],
-      "id": "487a90be-62a0-4b75-8c96-e2d3c23b3bab",
+      "id": "18defc73-c01c-45aa-a4f6-8bc8aef32217",
       "name": "list_branches",
       "credentials": {
         "mcpClientSseApi": {
@@ -588,10 +588,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3340,
-        360
+        500,
+        100
       ],
-      "id": "b59f4607-13d7-48d3-a9bf-a12563e0b754",
+      "id": "99fb598d-1b01-4b08-ae99-3faa237b63ba",
       "name": "list_my_repos",
       "credentials": {
         "mcpClientSseApi": {
@@ -609,10 +609,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3460,
-        360
+        620,
+        100
       ],
-      "id": "61ea34a1-a785-49c6-8299-6a07410deabd",
+      "id": "61bcea1a-a4f9-46b5-ba41-5443e0707450",
       "name": "list_releases",
       "credentials": {
         "mcpClientSseApi": {
@@ -630,10 +630,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3580,
-        360
+        740,
+        100
       ],
-      "id": "7769e98e-ad2c-4ee9-bf9c-b59af00aa624",
+      "id": "18f26707-c9e2-4bfc-94f8-552068eda0e1",
       "name": "list_repo_commits",
       "credentials": {
         "mcpClientSseApi": {
@@ -651,10 +651,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3700,
-        360
+        860,
+        100
       ],
-      "id": "36d3e005-d827-4d8b-9a3d-3656724bf338",
+      "id": "69bfd894-88d7-46e7-9126-edc2b55529b9",
       "name": "list_repo_issues",
       "credentials": {
         "mcpClientSseApi": {
@@ -672,10 +672,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3820,
-        360
+        980,
+        100
       ],
-      "id": "005dea61-49aa-42cb-be22-e114221ba043",
+      "id": "3f269b7e-a886-47b8-a567-826f5dc70e23",
       "name": "list_repo_pull_requests",
       "credentials": {
         "mcpClientSseApi": {
@@ -693,10 +693,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        3940,
-        360
+        1100,
+        100
       ],
-      "id": "6bd5b54c-df57-4f89-be52-7effbb509730",
+      "id": "0f434a06-82b1-4a25-be6c-c935e5c5b556",
       "name": "list_tags",
       "credentials": {
         "mcpClientSseApi": {
@@ -714,10 +714,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        4060,
-        360
+        1220,
+        100
       ],
-      "id": "fee58cc7-328d-4ea3-95cb-2b57373e88b8",
+      "id": "09a602c5-1ac3-4141-84a2-7bee7e94187a",
       "name": "search_org_teams",
       "credentials": {
         "mcpClientSseApi": {
@@ -735,10 +735,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        4180,
-        360
+        1340,
+        100
       ],
-      "id": "e4c2a6e0-ecb9-4cec-9dab-8d24f4fba016",
+      "id": "0ad1344d-83ee-4eed-aec5-9532d34bb531",
       "name": "search_repos",
       "credentials": {
         "mcpClientSseApi": {
@@ -756,10 +756,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        4300,
-        360
+        1460,
+        100
       ],
-      "id": "07c68891-9675-44a1-a6cd-d2e22c1335b6",
+      "id": "e8594abc-8640-4fba-b989-25ab085d5149",
       "name": "search_users",
       "credentials": {
         "mcpClientSseApi": {
@@ -777,10 +777,10 @@
       "type": "n8n-nodes-mcp.mcpClientTool",
       "typeVersion": 1,
       "position": [
-        4420,
-        360
+        1580,
+        100
       ],
-      "id": "14906156-50b8-442c-8ffe-8e6556bf39ff",
+      "id": "8b86da92-332d-413e-897b-0e7cb9b7229f",
       "name": "update_file",
       "credentials": {
         "mcpClientSseApi": {
@@ -792,25 +792,20 @@
     {
       "parameters": {
         "inputSource": "jsonExample",
-        "jsonExample": "{\n  \"input\": \"list all open pull requests in our gitea repo\",\n  \"reason\": \"The request involves managing Gitea repository pull requests, which is a primary capability of the Gitea Agent.\",\n  \"selectedAgent\": \"gitea-agent\"\n}"
+        "jsonExample": "{\n  \"input\": \"list all open pull requests in our gitea repo\",\n  \"reason\": \"The request involves managing Gitea repository pull requests, which is a primary capability of the Gitea Agent.\",\n  \"selectedAgent\": \"gitea-agent\",\n  \"chatHistory\": []\n}"
       },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        1880,
-        120
+        -980,
+        -140
       ],
-      "id": "34f27ecd-6bc5-4209-9351-7ef6b31ac3f2",
+      "id": "b291e542-a749-439d-8d83-b9653a422100",
       "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
   "connections": {
-    "When chat message received": {
-      "main": [
-        []
-      ]
-    },
     "OpenAI Chat Model": {
       "ai_languageModel": [
         [
@@ -1223,7 +1218,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2dc3e650-1f45-4e50-b589-ad731eb92e21",
+  "versionId": "4595fc1f-e0e4-4991-960c-fde0eb418545",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"

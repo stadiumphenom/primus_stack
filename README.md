@@ -5,17 +5,26 @@ Project NOVA (Networked Orchestration of Virtual Agents) is a comprehensive, sel
 ## 🌟 Features
 
 - **Centralized AI Assistant Hub**: Route requests to 25+ specialized agents through an intelligent router
+- **Conversation-Aware Intelligence**: Maintains context across interactions with advanced conversation history processing
+- **OpenWebUI Integration**: Modern chat interface with conversation persistence and enhanced user experience
 - **Domain-Specific Capabilities**: Knowledge management, development tools, media production, home automation, and more
 - **Self-Hosted & Privacy-Focused**: Run everything locally with open-source components
 - **Containerized Architecture**: Easy deployment with Docker, Dockerfiles, and docker-compose.yml files
 - **SSE Transport Integration**: Enhanced MCP server communication using supergateway
-- **Extensible Framework**: Add new specialized agents with provided templates
+- **Extensible Framework**: Add new specialized agents with provided templates and comprehensive documentation
 
 ## 🏗️ Architecture Overview
 
-Project NOVA uses a hub-and-spoke architecture where the main router agent analyzes user requests and delegates to specialized agents:
+Project NOVA uses a sophisticated hub-and-spoke architecture with conversation intelligence:
 
 ![Architecture Diagram](https://github.com/dujonwalker/project-nova/blob/main/screenshots/architecture.png)
+
+### Current Architecture Components:
+- **OpenWebUI Frontend**: Modern chat interface with conversation history and session management
+- **n8n Workflow Engine**: Processes requests and orchestrates agent communication
+- **Intelligent Router Agent**: Analyzes requests and conversation context to route to appropriate specialized agents
+- **25+ Specialized Agents**: Domain-specific MCP-powered agents for various tasks
+- **MCP Server Ecosystem**: Containerized services providing tool capabilities to agents
 
 ## 📚 Reference Guide
 
@@ -76,12 +85,19 @@ Project NOVA includes over 25 specialized agents across multiple domains:
 
 Before setting up Project NOVA, ensure you have:
 
+#### Option A: OpenWebUI + n8n Setup (Recommended)
+- **OpenWebUI Instance**: For the modern chat interface with conversation management
+  - **Note**: For text-to-speech features (voice input), OpenWebUI requires SSL/HTTPS (even a self-signed certificate works)
 - **n8n Instance**: A running n8n installation (v1.88.0 or later)
-  - **Critical**: Version 1.88.0+ (released April 10, 2025) is required as it introduced the MCP Client Tool node
-  - This node is essential for connecting to MCP-enabled services
+  - **Critical**: Version 1.88.0+ is required as it introduced the MCP Client Tool node
 - **Community Nodes**:
-  - [nerding-io/n8n-nodes-mcp-client](https://github.com/nerding-io/n8n-nodes-mcp-client) - Required as some agents use this community implementation
-  - Project NOVA currently uses a mix of official and community MCP nodes
+  - [nerding-io/n8n-nodes-mcp-client](https://github.com/nerding-io/n8n-nodes-mcp-client) - Required for some agents
+
+#### Option B: n8n Only Setup (Basic)
+- **n8n Instance**: A running n8n installation (v1.88.0 or later) with chat trigger capabilities
+- **Community Nodes**: Same as above
+
+#### Common Requirements
 - **Docker Host**: Environment for running containerized MCP servers
 - **LLM Access**: Either:
   - Cloud API access (OpenAI, Claude, Gemini, etc.)
@@ -91,15 +107,35 @@ Before setting up Project NOVA, ensure you have:
   - Examples: Home Assistant, Gitea, Reaper, OBS Studio, TriliumNext, etc.
   - Each agent requires its corresponding application to be accessible
 
-This repository contains all the tools and instructions needed to build your own AI assistant ecosystem using n8n as the workflow automation platform.
+### Setup Instructions
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/dujonwalker/project-nova.git
-   cd project-nova
-   ```
+#### 1. Clone the Repository
+```bash
+git clone https://github.com/dujonwalker/project-nova.git
+cd project-nova
+```
 
-2. Import workflows in your n8n instance:
+#### 2. Choose Your Deployment Option
+
+**Option A: OpenWebUI + n8n (Recommended)**
+
+This setup provides the best user experience with conversation history, session management, and a modern interface.
+
+1. **Set up OpenWebUI** with the n8n inlet filter:
+   - Copy `openwebui-function/n8n_inlet_filter.py` to your OpenWebUI functions directory
+   - **Important**: Update the configuration for your environment:
+     - Change `n8n_url` to point to your n8n instance (replace `localhost` with your server IP/hostname)
+     - Replace `[your-uuid]` in the webhook URL with your actual n8n webhook UUID
+   - The filter automatically forwards messages to n8n and manages conversation history
+
+2. **Configure n8n workflows**:
+   - Import the router agent workflow (`n8n-workflows/router_agent.json`)
+   - Set up a webhook trigger in the router agent (configure URL in OpenWebUI filter)
+   - Import specialized agent workflows as needed
+
+**Option B: n8n Only Setup**
+
+1. **Import workflows in your n8n instance**:
    - **Bulk import via n8n CLI** (easiest):
      ```bash
      # Navigate to your n8n installation directory
@@ -109,42 +145,123 @@ This repository contains all the tools and instructions needed to build your own
      - Navigate to your n8n dashboard
      - Click on "Workflows" in the sidebar
      - Use the "Import from file" option for each workflow
-     - Start with core workflows first, then specialized agents
+     - Start with the router agent first, then specialized agents
 
-3. Set up MCP servers:
-   - Use the Dockerfiles and docker-compose.yml files provided in `mcp-server-dockerfiles` to build and run your servers
-   - Or use the instructions to set up MCP servers directly on your host
+#### 3. Set up MCP Servers
+- Use the Dockerfiles and docker-compose.yml files provided in `mcp-server-dockerfiles` to build and run your servers
+- Or use the instructions to set up MCP servers directly on your host
+- Configure each MCP server for the agents you plan to use
 
-4. Configure your API keys:
-   - Update credentials in each workflow for your LLM provider
-   - Set up your preferred LLM API (OpenAI, Claude, Gemini, etc.)
-   - For local deployment, configure Ollama with any models that support tool use/function calling (examples include qwen3, llama3.1, mistral, and others)
-   - Give NOVA the keys to your apps (i.e., Paperless-NGX API key, Gitea API key, Home Assistant token, etc.)
+#### 4. Configure Your API Keys and Credentials
+- **LLM Provider**: Update credentials in each workflow for your LLM provider (OpenAI, Claude, Gemini, etc.)
+- **Application APIs**: Give NOVA the keys to your apps (Paperless-NGX API key, Gitea API key, Home Assistant token, etc.)
+- **MCP Server Connections**: Configure SSE endpoints or server connections in each workflow
 
-5. Start with the router agent:
-   - Once your workflows and agents are set up, navigate to the router agent workflow in n8n
-   - Use the chat trigger node to start a conversation with NOVA
-   - The router will analyze your requests and direct them to the appropriate specialized agents
+#### 5. Start Using NOVA
 
-> **Note:** The repository is structured to make replication as straightforward as possible. You can choose to implement all agents or just the ones you need.
+**With OpenWebUI Setup:**
+- Navigate to your OpenWebUI instance
+- Start a conversation - messages are automatically processed through n8n
+- The inlet filter handles conversation history and routing automatically
 
-<p align="center">
-  <img src="https://github.com/dujonwalker/project-nova/blob/main/screenshots/chat-interface.png?raw=true" alt="Chat Interface" width="50%">
-</p>
+**With n8n Only Setup:**
+- Navigate to the router agent workflow in n8n
+- Use the chat trigger node to start a conversation with NOVA
+- The router will analyze your requests and direct them to appropriate specialized agents
+
+## 🔧 Advanced Configuration
+
+### OpenWebUI Integration Details
+
+The OpenWebUI integration uses an inlet filter (`openwebui-function/n8n_inlet_filter.py`) that:
+
+- **Processes all incoming messages** through n8n before they reach the LLM
+- **Manages conversation history** by extracting and forwarding previous messages
+- **Prevents duplicate calls** with intelligent deduplication (30-second window)
+- **Handles session management** with unique chat IDs
+- **Returns n8n responses** directly to the user through system message injection
+
+Key configuration options in the filter:
+- `n8n_url`: Your n8n webhook endpoint URL
+- `n8n_bearer_token`: Authentication token for n8n
+- `timeout`: Request timeout for n8n calls (default: 15 seconds)
+- `enabled`: Toggle to enable/disable n8n processing
+
+### Conversation History Processing
+
+Project NOVA now includes sophisticated conversation context handling:
+
+**Router Agent Features:**
+- Processes conversation history to understand context
+- Provides intelligent follow-up routing (e.g., "any repos with X in the name?" continues with the same repository agent)
+- Maintains session continuity across interactions
+
+**Sub-Agent Features:**
+- All specialized agents receive conversation history when available
+- Agents can reference previous interactions for better context
+- Consistent conversation experience across agent handoffs
+
+### Adding a New Specialized Agent
+
+1. Use the `prompt-templates/generate-agent.md` template to create a new agent system prompt
+2. Create a Dockerfile using `prompt-templates/generate-container.md` as a guide
+3. Add n8n workflow configuration using existing workflows as templates
+4. Update the router agent to include your new specialized agent
+5. Add documentation to the reference guide
+
+## 🔍 Use Cases
+
+- **Home Automation**: "Turn off the living room lights and start playing my evening playlist"
+- **Knowledge Management**: "Find my notes about the project meeting from last Tuesday"
+- **Creative Production**: "Help me set up a new Ableton Live project with a drum rack"
+- **Development Assistance**: "Check my Gitea repositories for any open pull requests"
+- **System Management**: "Monitor the CPU usage on my server for the last 24 hours"
+- **Content Analysis**: "Get the transcript from this YouTube video and summarize the key points"
+
+## 🛠️ Troubleshooting
+
+### OpenWebUI Integration Issues
+- **Filter Not Processing**: Check the OpenWebUI function logs for errors
+- **n8n Connection Failed**: Verify the webhook URL and bearer token in the filter configuration
+- **Duplicate Responses**: The filter includes deduplication; check if `force_n8n` is enabled unnecessarily
+
+### n8n Workflow Issues
+- **Agent Not Responding**: Check Docker container logs for the specific MCP server
+- **Router Misidentifying Agent**: Review conversation history processing and agent selection logic
+- **API Connectivity Issues**: Verify API keys and MCP server connections in workflow configurations
+
+### Conversation History Problems
+- **Context Not Maintained**: Ensure conversation history is being passed correctly through the OpenWebUI filter or n8n chat trigger
+- **Follow-up Routing Issues**: Check that the router agent is processing conversation context properly
+
+## 📊 Performance Considerations
+
+- **Recommended minimum specs for basic setup**: 4GB RAM, 2 CPU cores
+- **For OpenWebUI + full agent ecosystem**: 16GB RAM, 8 CPU cores recommended
+- **Consider using local LLM inference** (Ollama) for reduced API costs and latency
+- **MCP server resource usage** varies by agent - monitor container usage and scale as needed
+
+## 🔮 Future Development
+
+- [ ] Enhanced OpenWebUI integration features:
+  - File upload support through agents
+- [ ] Additional specialized agents for more domains
 
 ## 📁 Repository Structure
 
 ```
 project-nova/
-├── README.md                      # This README file
-├── agents/                        # System prompts for all agents
+├── README.md                      # This comprehensive README file
+├── agents/                        # System prompts for all agents (reference)
 ├── mcp-server-dockerfiles/        # Dockerfiles and docker-compose.yml files for MCP servers
 │   ├── [server-name]-mcp/         # Each MCP server has its own directory
 │   │   ├── Dockerfile             # Container definition
 │   │   ├── docker-compose.yml     # Deployment configuration
 │   │   ├── README.md              # Server-specific setup instructions
 │   │   └── start.sh               # Entry point script (when applicable)
-├── n8n-workflows/                 # n8n workflow export files (.json)
+├── n8n-workflows/                 # n8n workflow export files (.json) - THE ACTUAL WORKING SYSTEM
+├── openwebui-function/            # OpenWebUI integration components
+│   └── n8n_inlet_filter.py       # OpenWebUI inlet filter for n8n integration
 ├── prompt-templates/              # Templates for creating new components
 │   ├── agent-input-examples/      # Example inputs for each agent (.json)
 │   ├── generate-agent.md          # Template for creating new agents
@@ -160,46 +277,10 @@ project-nova/
         └── automation-agents.md
 ```
 
-## 🔧 Advanced Configuration
-
-### Adding a New Specialized Agent
-
-1. Use the `generate-agent.md` template to create a new agent system prompt
-2. Create a Dockerfile using `generate-container.md` as a guide
-3. Add n8n workflow configuration
-4. Update the router agent to include your new specialized agent
-
-## 🔍 Use Cases
-
-- **Home Automation**: "Turn off the living room lights and start playing my evening playlist"
-- **Knowledge Management**: "Find my notes about the project meeting from last Tuesday"
-- **Creative Production**: "Help me set up a new Ableton Live project with a drum rack"
-- **Development Assistance**: "Check my Gitea repositories for any open pull requests"
-- **System Management**: "Monitor the CPU usage on my server for the last 24 hours"
-
-## 🛠️ Troubleshooting
-
-- **Agent Not Responding**: Check Docker container logs for the specific MCP server
-- **Router Misidentifying Agent**: Review the router-agent.md system prompt for accurate routing logic
-- **API Connectivity Issues**: Verify API keys in your .env file and container environment
-- **Prompt Configuration**: Make sure all sub-agents have the prompt (user message) set to `{{ $json.input }}` in their n8n workflow configuration
-
-## 📊 Performance Considerations
-
-- Recommended minimum specs: 4GB RAM, 2 CPU cores for basic setup
-- For running all agents simultaneously: 16GB RAM, 8 CPU cores recommended
-- Consider using local LLM inference options for reduced API costs and latency
-
-## 🔮 Future Development
-
-- [ ] Integration with OpenWebUI to provide:
-  - Voice interface integration
-  - Sending and receiving files
-- [ ] More specialized agents for additional domains
-
 ## 🙏 Acknowledgments
 
 - [n8n](https://n8n.io/) for the incredible workflow automation platform
+- [OpenWebUI](https://openwebui.com/) for the excellent frontend interface with conversation management
 - [Model Context Protocol](https://modelcontextprotocol.io/) for standardizing AI tool interaction
 - [Supergateway](https://github.com/supercorp-ai/supergateway) for enabling conversion from STDIO to SSE transport
 - [nerding-io](https://github.com/nerding-io/n8n-nodes-mcp) for their pioneering work on n8n-nodes-mcp that inspired this project
