@@ -121,14 +121,25 @@ cd project-nova
 
 This setup provides the best user experience with conversation history, session management, and a modern interface.
 
-1. **Set up OpenWebUI** with the n8n inlet filter:
-   - Copy `openwebui-function/n8n_inlet_filter.py` to your OpenWebUI functions directory
-   - **Important**: Update the configuration for your environment:
+1. **Set up OpenWebUI inlet filter**:
+   - Copy the contents of `openwebui-function/n8n_inlet_filter.py` from this repository
+   - In your OpenWebUI instance, navigate to **Workspace** → **Functions**
+   - Click **"Create New Function"** and select **"Filter"** as the function type
+   - Paste the code from `n8n_inlet_filter.py` into the function editor
+   - **Important**: Update the configuration variables at the top of the filter:
      - Change `n8n_url` to point to your n8n instance (replace `localhost` with your server IP/hostname)
      - Replace `[your-uuid]` in the webhook URL with your actual n8n webhook UUID
-   - The filter automatically forwards messages to n8n and manages conversation history
+   - Save the filter
 
-2. **Configure n8n workflows**:
+2. **Create a new model using the filter**:
+   - Navigate to **Workspace** → **Models**
+   - Click **"Create New Model"**
+   - Configure your base model (e.g., your preferred LLM)
+   - In the **Filters** section, select the n8n inlet filter you just created
+   - Save the model
+   - The filter will now automatically forward messages to n8n and manage conversation history
+
+3. **Configure n8n workflows**:
    - Import the router agent workflow (`n8n-workflows/router_agent.json`)
    - Set up a webhook trigger in the router agent (configure URL in OpenWebUI filter)
    - Import specialized agent workflows as needed
@@ -217,22 +228,6 @@ Project NOVA now includes sophisticated conversation context handling:
 - **Development Assistance**: "Check my Gitea repositories for any open pull requests"
 - **System Management**: "Monitor the CPU usage on my server for the last 24 hours"
 - **Content Analysis**: "Get the transcript from this YouTube video and summarize the key points"
-
-## 🛠️ Troubleshooting
-
-### OpenWebUI Integration Issues
-- **Filter Not Processing**: Check the OpenWebUI function logs for errors
-- **n8n Connection Failed**: Verify the webhook URL and bearer token in the filter configuration
-- **Duplicate Responses**: The filter includes deduplication; check if `force_n8n` is enabled unnecessarily
-
-### n8n Workflow Issues
-- **Agent Not Responding**: Check Docker container logs for the specific MCP server
-- **Router Misidentifying Agent**: Review conversation history processing and agent selection logic
-- **API Connectivity Issues**: Verify API keys and MCP server connections in workflow configurations
-
-### Conversation History Problems
-- **Context Not Maintained**: Ensure conversation history is being passed correctly through the OpenWebUI filter or n8n chat trigger
-- **Follow-up Routing Issues**: Check that the router agent is processing conversation context properly
 
 ## 📊 Performance Considerations
 
