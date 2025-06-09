@@ -1,9 +1,9 @@
 services:
-  blinko-mcp-server:
+  custom-blinko-mcp-server:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: blinko-mcp-server
+    container_name: custom-blinko-mcp-server
     restart: unless-stopped
     environment:
       - HOST_IP=${HOST_IP}
@@ -16,8 +16,8 @@ services:
     volumes:
       - ./logs:/app/logs
     networks:
-      - blinko-network
+      - custom-blinko-network
 
 networks:
-  blinko-network:
+  custom-blinko-network:
     driver: bridge

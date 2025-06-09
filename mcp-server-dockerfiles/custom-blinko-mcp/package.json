@@ -1,0 +1,21 @@
+{
+  "name": "custom-blinko-mcp-server",
+  "version": "1.0.0",
+  "description": "Custom MCP server for Blinko with working search functionality",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "supergateway --stdio \"node simple-server.js\" --port ${SSE_PORT:-8442}"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "keywords": [
+    "mcp",
+    "blinko",
+    "notes",
+    "model-context-protocol"
+  ],
+  "author": "Project NOVA",
+  "license": "MIT"
+}

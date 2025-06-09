@@ -7,7 +7,7 @@ This index provides a comprehensive overview of all available specialized agents
 | Agent | Description | Key Capabilities |
 |-------|-------------|-----------------|
 | [TriliumNext Notes Agent](https://github.com/tan-yong-sheng/triliumnext-mcp) | Controls TriliumNext Notes knowledge base application | Search, create, update, and delete hierarchical notes |
-| [Blinko Agent](https://github.com/BryceWG/mcp-server-blinko) | Manages notes in the Blinko note-taking service | Create flash notes, regular notes, search, share notes |
+| Blinko Agent | Manages notes in the Blinko note-taking service (custom MCP implementation) | Create flash notes, regular notes, share notes |
 | [BookStack Agent](https://github.com/yellowgg2/mcp-bookstack) | Interfaces with BookStack documentation and wiki platform | Search and retrieve content from wiki pages |
 | [Memos Agent](https://github.com/LeslieLeung/mcp-server-memos) | Works with lightweight Memos note-taking application | Search and create memos with visibility control |
 | [Outline Agent](https://github.com/mmmeff/outline-mcp-server) | Manages Outline knowledge base for team documentation | Document management, collection organization, comments |
