@@ -183,6 +183,7 @@ This setup provides the best user experience with conversation history, session 
 
 **With n8n Only Setup:**
 - Navigate to the router agent workflow in n8n
+- Disconnect the webhook trigger node and connect the chat trigger node instead (the chat trigger is already present but disconnected by default)
 - Use the chat trigger node to start a conversation with NOVA
 - The router will analyze your requests and direct them to appropriate specialized agents
 
