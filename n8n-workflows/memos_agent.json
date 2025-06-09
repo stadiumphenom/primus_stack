@@ -8,29 +8,12 @@
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.1,
       "position": [
-        100,
-        180
+        -1060,
+        -300
       ],
-      "id": "13f28ba9-5a69-4818-9579-f5be849193aa",
+      "id": "d9473ded-9c5e-45ca-ac51-25e8b47a7238",
       "name": "When chat message received",
       "webhookId": "655b7e75-074d-4841-a5a7-c95c68cf0f7a"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $json.chatHistory && $json.chatHistory.length > 0 ? 'Previous conversation context:\\n' + $json.chatHistory.map(msg => msg.kwargs && msg.kwargs.content ? (msg.id && msg.id[2] === 'HumanMessage' ? 'User: ' : 'Assistant: ') + msg.kwargs.content : '').filter(text => text).join('\\n') + '\\n\\nCurrent request:\\n' + $json.input : $json.input }}",
-        "options": {
-          "systemMessage": "You are an AI assistant with access to the Memos note-taking application through a Model Context Protocol (MCP) server. This integration allows you to search for existing memos and create new ones on behalf of the user.\n\n### Available Tools\n\nYou have access to two key functions through the memos-mcp-server:\n\n1. `search_memos`: Search for existing memos using keywords.\n   - Parameter: `keyword` (string) - The search term to look for in memos.\n   - Returns: A list of matching memos with their content and metadata.\n\n2. `create_memo`: Create a new memo in the user's Memos account.\n   - Parameter: `content` (string) - The content to include in the new memo.\n   - Parameter: `visibility` (string, optional) - Options: \"PUBLIC\", \"PROTECTED\", or \"PRIVATE\". Default is determined by server settings.\n   - Returns: Confirmation of memo creation with its details.\n\n### Operational Guidelines\n\n1. **Memo Searching**:\n   - When users ask about existing notes or information, use `search_memos` to find relevant content.\n   - Interpret search requests broadly - if a user asks \"what do I know about X?\" or \"find my notes on Y\", this is a search request.\n   - Always search before creating duplicate memos.\n   - Present search results in a clear, organized manner, highlighting the most relevant information.\n\n2. **Memo Creation**:\n   - Use `create_memo` when users want to save new information or take notes.\n   - Format memo content appropriately, using Markdown for structure when helpful.\n   - Include the default tag (#mcp) in created memos as configured in the environment settings.\n   - Confirm successful creation with the user.\n\n3. **Contextual Understanding**:\n   - Remember that memos may contain personal or important information to the user.\n   - When suggesting actions with memos, consider their organizational needs.\n   - Help users maintain their knowledge system effectively.\n\n4. **Error Handling**:\n   - If API calls fail, provide clear explanations and suggest alternatives.\n   - If the server is unavailable, inform the user and offer to try again later.\n\n### Interaction Examples\n\nWhen a user says: \"Find my notes about project deadlines\"\nYou should: Use `search_memos` with keyword \"project deadlines\" and present the results.\n\nWhen a user says: \"Take a note that I need to call John tomorrow\"\nYou should: Use `create_memo` with appropriate content that includes the reminder and the #mcp tag.\n\nWhen a user says: \"What have I written about machine learning?\"\nYou should: Use `search_memos` with keyword \"machine learning\" to find relevant notes.\n\n### Privacy and Security\n\n- Never share memo contents with unauthorized parties.\n- Treat all memo data as confidential user information.\n- Do not create memos with sensitive data like passwords or private keys.\n- Respect the visibility settings when creating memos.\n\nRemember that you are helping the user manage their knowledge base through Memos. Your goal is to make information retrieval and capture seamless and effective."
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 1.9,
-      "position": [
-        92,
-        360
-      ],
-      "id": "86fc801a-4c2c-4cf5-a055-77c0257926d2",
-      "name": "AI Agent"
     },
     {
       "parameters": {
@@ -44,76 +27,15 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        0,
-        580
+        -812,
+        280
       ],
-      "id": "cce9a169-d15a-4113-b41a-c541e4656a79",
+      "id": "83bfbdc2-0aa2-4a6c-9f1a-a2bcc58feff7",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
           "id": "avSgLKwLvvI1EPHE",
           "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "connectionType": "sse"
-      },
-      "type": "n8n-nodes-mcp.mcpClientTool",
-      "typeVersion": 1,
-      "position": [
-        120,
-        580
-      ],
-      "id": "998f76c4-fbbc-452b-8f31-ba9f6d4d811f",
-      "name": "MCP Client",
-      "credentials": {
-        "mcpClientSseApi": {
-          "id": "EM0TDt3N2hAogZsK",
-          "name": "MCP Client - memos-mcp"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "connectionType": "sse",
-        "operation": "executeTool",
-        "toolName": "search_memos"
-      },
-      "type": "n8n-nodes-mcp.mcpClientTool",
-      "typeVersion": 1,
-      "position": [
-        240,
-        580
-      ],
-      "id": "21062d2a-8e5b-4c4b-99a3-49e9f9378ec7",
-      "name": "search_memos",
-      "credentials": {
-        "mcpClientSseApi": {
-          "id": "EM0TDt3N2hAogZsK",
-          "name": "MCP Client - memos-mcp"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "connectionType": "sse",
-        "operation": "executeTool",
-        "toolName": "create_memo"
-      },
-      "type": "n8n-nodes-mcp.mcpClientTool",
-      "typeVersion": 1,
-      "position": [
-        360,
-        580
-      ],
-      "id": "42df602b-0609-4216-a1c5-104b20166ff2",
-      "name": "create_memo",
-      "credentials": {
-        "mcpClientSseApi": {
-          "id": "EM0TDt3N2hAogZsK",
-          "name": "MCP Client - memos-mcp"
         }
       }
     },
@@ -125,59 +47,51 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -180,
-        360
+        -1060,
+        60
       ],
-      "id": "58f40127-b788-4a2d-bf18-abba64fec55f",
+      "id": "8757efac-bec7-49c5-9eee-42fe6ba86b24",
       "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatHistory && $json.chatHistory.length > 0 ? 'Previous conversation context:\\n' + $json.chatHistory.map(msg => msg.kwargs && msg.kwargs.content ? (msg.id && msg.id[2] === 'HumanMessage' ? 'User: ' : 'Assistant: ') + msg.kwargs.content : '').filter(text => text).join('\\n') + '\\n\\nCurrent request:\\n' + $json.input : $json.input }}",
+        "options": {
+          "systemMessage": "You are an AI assistant with access to the Memos note-taking application through a Model Context Protocol (MCP) server. This integration allows you to search for existing memos and create new ones on behalf of the user.\n\n### Available Tools\n\nYou have access to two key functions through the memos-mcp-server:\n\n1. `search_memos`: Search for existing memos using keywords.\n   - Parameter: `keyword` (string) - The search term to look for in memos.\n   - Returns: A list of matching memos with their content and metadata.\n\n2. `create_memo`: Create a new memo in the user's Memos account.\n   - Parameter: `content` (string) - The content to include in the new memo.\n   - Parameter: `visibility` (string, optional) - Options: \"PUBLIC\", \"PROTECTED\", or \"PRIVATE\". Default is determined by server settings.\n   - Returns: Confirmation of memo creation with its details.\n\n### Operational Guidelines\n\n1. **Memo Searching**:\n   - When users ask about existing notes or information, use `search_memos` to find relevant content.\n   - Interpret search requests broadly - if a user asks \"what do I know about X?\" or \"find my notes on Y\", this is a search request.\n   - Always search before creating duplicate memos.\n   - Present search results in a clear, organized manner, highlighting the most relevant information.\n\n2. **Memo Creation**:\n   - Use `create_memo` when users want to save new information or take notes.\n   - Format memo content appropriately, using Markdown for structure when helpful.\n   - Include the default tag (#mcp) in created memos as configured in the environment settings.\n   - Confirm successful creation with the user.\n\n3. **Contextual Understanding**:\n   - Remember that memos may contain personal or important information to the user.\n   - When suggesting actions with memos, consider their organizational needs.\n   - Help users maintain their knowledge system effectively.\n\n4. **Error Handling**:\n   - If API calls fail, provide clear explanations and suggest alternatives.\n   - If the server is unavailable, inform the user and offer to try again later.\n\n### Interaction Examples\n\nWhen a user says: \"Find my notes about project deadlines\"\nYou should: Use `search_memos` with keyword \"project deadlines\" and present the results.\n\nWhen a user says: \"Take a note that I need to call John tomorrow\"\nYou should: Use `create_memo` with appropriate content that includes the reminder and the #mcp tag.\n\nWhen a user says: \"What have I written about machine learning?\"\nYou should: Use `search_memos` with keyword \"machine learning\" to find relevant notes.\n\n### Privacy and Security\n\n- Never share memo contents with unauthorized parties.\n- Treat all memo data as confidential user information.\n- Do not create memos with sensitive data like passwords or private keys.\n- Respect the visibility settings when creating memos.\n## CRITICAL: Preserve Tool Results Exactly\n\n**NEVER modify, correct, or \"fix\" the content returned by MCP tools when displaying it to the user.** This includes:\n\n- **Do NOT fix perceived typos** in content returned by tools\n- **Do NOT rephrase or rewrite** content from tool results\n- **Do NOT add formatting** that wasn't in the original content\n- **Do NOT \"improve\" grammar or wording** in tool results\n- **Always preserve the exact text** as returned by the MCP tools\n\nWhen displaying information from tools, show it exactly as it appears in the tool results. Your role is to present the information, not to edit or improve it. The user expects to see their actual data, not your interpretation of it.\n\nRemember that you are helping the user manage their knowledge base through Memos. Your goal is to make information retrieval and capture seamless and effective."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -840,
+        60
+      ],
+      "id": "0cf5522e-c6e8-4a08-a56c-bb4665a38ffa",
+      "name": "memos-agent"
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "http://192.168.50.196:3002/sse"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        -692,
+        280
+      ],
+      "id": "e56b0606-6b4f-449f-857c-82694e4001c6",
+      "name": "all-tools"
     }
   ],
   "pinData": {},
   "connections": {
-    "When chat message received": {
-      "main": [
-        []
-      ]
-    },
     "OpenAI Chat Model": {
       "ai_languageModel": [
         [
           {
-            "node": "AI Agent",
+            "node": "memos-agent",
             "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MCP Client": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "search_memos": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "create_memo": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -187,8 +101,19 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "memos-agent",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "all-tools": {
+      "ai_tool": [
+        [
+          {
+            "node": "memos-agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -199,7 +124,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d6436f08-6d6b-455a-9cbe-c08679d60f2b",
+  "versionId": "e392ed57-31b5-4c9d-87e3-af08615d8bd2",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"

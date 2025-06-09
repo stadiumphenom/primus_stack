@@ -11,6 +11,7 @@ Project NOVA (Networked Orchestration of Virtual Agents) is a comprehensive, sel
 - **Self-Hosted & Privacy-Focused**: Run everything locally with open-source components
 - **Containerized Architecture**: Easy deployment with Docker, Dockerfiles, and docker-compose.yml files
 - **SSE Transport Integration**: Enhanced MCP server communication using supergateway
+- **Native n8n Integration**: Uses n8n's built-in MCP Client Tool node - no community nodes required
 - **Extensible Framework**: Add new specialized agents with provided templates and comprehensive documentation
 
 ## 🏗️ Architecture Overview
@@ -98,13 +99,12 @@ Before setting up Project NOVA, ensure you have:
 - **OpenWebUI Instance**: For the modern chat interface with conversation management
   - **Note**: For text-to-speech features (voice input), OpenWebUI requires SSL/HTTPS (even a self-signed certificate works)
 - **n8n Instance**: A running n8n installation (v1.88.0 or later)
-  - **Critical**: Version 1.88.0+ is required as it introduced the MCP Client Tool node
-- **Community Nodes**:
-  - [nerding-io/n8n-nodes-mcp-client](https://github.com/nerding-io/n8n-nodes-mcp-client) - Required for some agents
+  - **Critical**: Version 1.88.0+ is required as it introduced the native MCP Client Tool node
+  - **No Community Nodes Required**: All agents now use n8n's native MCP Client Tool node
 
 #### Option B: n8n Only Setup (Basic)
 - **n8n Instance**: A running n8n installation (v1.88.0 or later) with chat trigger capabilities
-- **Community Nodes**: Same as above
+- **No Community Nodes Required**: All agents use n8n's native MCP Client Tool node
 
 #### Common Requirements
 - **Docker Host**: Environment for running containerized MCP servers

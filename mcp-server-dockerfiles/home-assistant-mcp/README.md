@@ -139,6 +139,62 @@ To update the container:
    docker compose up -d
    ```
 
+## Available MCP Tools and Capabilities
+
+The Hass-MCP server provides comprehensive tools for interacting with your Home Assistant instance:
+
+### Core Tools
+
+1. **`get_version`** - Retrieve Home Assistant version information
+2. **`get_entity`** - Get state of a specific entity with optional field filtering
+3. **`entity_action`** - Perform actions on entities (turn on/off/toggle devices)
+4. **`list_entities`** - List entities with optional domain/search filtering
+5. **`search_entities_tool`** - Search for entities matching a specific query
+6. **`domain_summary_tool`** - Get summary of entities organized by domain
+7. **`list_automations`** - List all Home Assistant automations
+8. **`call_service_tool`** - Call any Home Assistant service directly
+9. **`restart_ha`** - Restart your Home Assistant instance
+10. **`get_history`** - Retrieve state history of an entity over time
+11. **`get_error_log`** - Get Home Assistant error log for troubleshooting
+
+### Resource Endpoints
+
+The MCP server also provides resource endpoints for direct queries:
+
+- `hass://entities/{entity_id}` - Get specific entity state
+- `hass://entities/{entity_id}/detailed` - Get detailed entity information
+- `hass://entities` - List all entities organized by domain
+- `hass://entities/domain/{domain}` - List entities in a specific domain
+- `hass://search/{query}/{limit}` - Search entities with custom result limit
+
+### Working with Areas and Zones
+
+**Areas vs Zones:**
+- **Areas**: Physical rooms/spaces (Living Room, Kitchen, Bedroom)
+- **Zones**: Geographic locations for presence detection (Home, Work, School)
+
+**Common Domains to Query:**
+- `zone` - Geographic zones for device tracking
+- `area` - Physical room areas (if configured)
+- `light` - Lighting devices (grouped by areas)
+- `switch` - Switch devices (grouped by areas)
+- `sensor` - Sensor devices (grouped by areas)
+- `device_tracker` - Presence detection devices
+
+**Example Usage:**
+- List all zones: Use `list_entities` with domain filter `zone`
+- Find room lights: Use `search_entities_tool` with query "living room light"
+- Get area summary: Use `domain_summary_tool` for specific domains
+- Control devices: Use `entity_action` or `call_service_tool`
+
+### Integration Tips
+
+When using these tools through n8n:
+- Use `list_entities` with domain filtering to explore your setup
+- Combine `search_entities_tool` with device control actions
+- Use `get_entity` for detailed device state before taking actions
+- Leverage `call_service_tool` for complex Home Assistant services
+
 ## Logs and Monitoring
 
 View container logs:
