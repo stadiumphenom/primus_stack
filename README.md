@@ -46,7 +46,7 @@ Project NOVA includes over 25 specialized agents across multiple domains:
 
 ### Knowledge Management & Note-Taking
 - [TriliumNext Notes Agent](https://github.com/tan-yong-sheng/triliumnext-mcp) - Controls TriliumNext Notes knowledge base application
-- Blinko Agent - Manages notes in the Blinko note-taking service (uses custom MCP implementation)
+- [Blinko Agent](https://github.com/dujonwalker/project-nova/tree/main/mcp-server-dockerfiles/custom-blinko-mcp) - Manages notes in the Blinko note-taking service (uses custom MCP implementation)
 - [BookStack Agent](https://github.com/yellowgg2/mcp-bookstack) - Interfaces with BookStack documentation and wiki platform
 - [Memos Agent](https://github.com/LeslieLeung/mcp-server-memos) - Works with lightweight Memos note-taking application
 - [Outline Agent](https://github.com/mmmeff/outline-mcp-server) - Manages Outline knowledge base for team documentation
