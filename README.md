@@ -79,6 +79,15 @@ Project NOVA includes over 25 specialized agents across multiple domains:
 - [Home Assistant Agent](https://github.com/voska/hass-mcp) - Controls smart home devices through Home Assistant
 - [Prometheus Agent](https://github.com/pab1it0/prometheus-mcp-server) - Queries and analyzes metrics from Prometheus monitoring
 
+## 🔍 Use Cases
+
+- **Home Automation**: "Turn off the living room lights and start playing my evening playlist"
+- **Knowledge Management**: "Find my notes about the project meeting from last Tuesday"
+- **Creative Production**: "Help me set up a new Ableton Live project with a drum rack"
+- **Development Assistance**: "Check my Gitea repositories for any open pull requests"
+- **System Management**: "Monitor the CPU usage on my server for the last 24 hours"
+- **Content Analysis**: "Get the transcript from this YouTube video and summarize the key points"
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -121,14 +130,22 @@ cd project-nova
 
 This setup provides the best user experience with conversation history, session management, and a modern interface.
 
-1. **Set up OpenWebUI** with the n8n inlet filter:
-   - Copy `openwebui-function/n8n_inlet_filter.py` to your OpenWebUI functions directory
-   - **Important**: Update the configuration for your environment:
-     - Change `n8n_url` to point to your n8n instance (replace `localhost` with your server IP/hostname)
-     - Replace `[your-uuid]` in the webhook URL with your actual n8n webhook UUID
-   - The filter automatically forwards messages to n8n and manages conversation history
+1. **Set up OpenWebUI inlet filter**:
+   - In your OpenWebUI instance, navigate to **Workspace** → **Functions**
+   - Click **"Create New Function"**
+   - Copy and paste the code from `openwebui-function/n8n_inlet_filter.py` into the function editor
+   - **Important**: Update the `n8n_url` configuration variable at the top of the filter with your complete n8n webhook URL (including server IP/hostname and webhook UUID)
+   - Save the filter
 
-2. **Configure n8n workflows**:
+2. **Create a new model using the filter**:
+   - Navigate to **Workspace** → **Models**
+   - Click **"Create New Model"**
+   - Configure your base model (e.g., your preferred LLM)
+   - In the **Filters** section, select the n8n inlet filter you just created
+   - Save the model
+   - The filter will now automatically forward messages to n8n and manage conversation history
+
+3. **Configure n8n workflows**:
    - Import the router agent workflow (`n8n-workflows/router_agent.json`)
    - Set up a webhook trigger in the router agent (configure URL in OpenWebUI filter)
    - Import specialized agent workflows as needed
@@ -147,11 +164,10 @@ This setup provides the best user experience with conversation history, session 
      - Use the "Import from file" option for each workflow
      - Start with the router agent first, then specialized agents
 
-2. **⚠️ IMPORTANT: Update Configuration After Import**:
-   - **Webhook IDs**: Replace all `REPLACE_WITH_YOUR_WEBHOOK_ID` placeholders with actual webhook IDs from your n8n instance
-   - **IP Addresses**: Update all `YOUR_SERVER_IP` placeholders with your actual server IP addresses
-   - **API Keys**: Configure your actual API keys for each service (Blinko, Home Assistant, etc.)
-   - **Domain Names**: Update domain references to match your environment
+2. **Configure after import**:
+   - **Update OpenWebUI filter**: Copy the webhook URL from your imported router agent and paste it into the OpenWebUI inlet filter configuration
+   - **Configure API keys**: Add your actual API keys for the services you want to use (Blinko, Home Assistant, etc.)
+   - **Update server IPs**: Replace `YOUR_SERVER_IP` placeholders with your actual server addresses
 
 #### 3. Set up MCP Servers
 - Use the Dockerfiles and docker-compose.yml files provided in `mcp-server-dockerfiles` to build and run your servers
@@ -172,6 +188,7 @@ This setup provides the best user experience with conversation history, session 
 
 **With n8n Only Setup:**
 - Navigate to the router agent workflow in n8n
+- Disconnect the webhook trigger node and connect the chat trigger node instead (the chat trigger is already present but disconnected by default)
 - Use the chat trigger node to start a conversation with NOVA
 - The router will analyze your requests and direct them to appropriate specialized agents
 
@@ -215,44 +232,6 @@ Project NOVA now includes sophisticated conversation context handling:
 4. Update the router agent to include your new specialized agent
 5. Add documentation to the reference guide
 
-## 🔍 Use Cases
-
-- **Home Automation**: "Turn off the living room lights and start playing my evening playlist"
-- **Knowledge Management**: "Find my notes about the project meeting from last Tuesday"
-- **Creative Production**: "Help me set up a new Ableton Live project with a drum rack"
-- **Development Assistance**: "Check my Gitea repositories for any open pull requests"
-- **System Management**: "Monitor the CPU usage on my server for the last 24 hours"
-- **Content Analysis**: "Get the transcript from this YouTube video and summarize the key points"
-
-## 🛠️ Troubleshooting
-
-### OpenWebUI Integration Issues
-- **Filter Not Processing**: Check the OpenWebUI function logs for errors
-- **n8n Connection Failed**: Verify the webhook URL and bearer token in the filter configuration
-- **Duplicate Responses**: The filter includes deduplication; check if `force_n8n` is enabled unnecessarily
-
-### n8n Workflow Issues
-- **Agent Not Responding**: Check Docker container logs for the specific MCP server
-- **Router Misidentifying Agent**: Review conversation history processing and agent selection logic
-- **API Connectivity Issues**: Verify API keys and MCP server connections in workflow configurations
-
-### Conversation History Problems
-- **Context Not Maintained**: Ensure conversation history is being passed correctly through the OpenWebUI filter or n8n chat trigger
-- **Follow-up Routing Issues**: Check that the router agent is processing conversation context properly
-
-## 📊 Performance Considerations
-
-- **Recommended minimum specs for basic setup**: 4GB RAM, 2 CPU cores
-- **For OpenWebUI + full agent ecosystem**: 16GB RAM, 8 CPU cores recommended
-- **Consider using local LLM inference** (Ollama) for reduced API costs and latency
-- **MCP server resource usage** varies by agent - monitor container usage and scale as needed
-
-## 🔮 Future Development
-
-- [ ] Enhanced OpenWebUI integration features:
-  - File upload support through agents
-- [ ] Additional specialized agents for more domains
-
 ## 📁 Repository Structure
 
 ```
@@ -282,6 +261,19 @@ project-nova/
         ├── media-agents.md
         └── automation-agents.md
 ```
+
+## 📊 Performance Considerations
+
+- **Recommended minimum specs for basic setup**: 4GB RAM, 2 CPU cores
+- **For OpenWebUI + full agent ecosystem**: 16GB RAM, 8 CPU cores recommended
+- **Consider using local LLM inference** (Ollama) for reduced API costs and latency
+- **MCP server resource usage** varies by agent - monitor container usage and scale as needed
+
+## 🔮 Future Development
+
+- [ ] Enhanced OpenWebUI integration features:
+  - File upload support through agents
+- [ ] Additional specialized agents for more domains
 
 ## 🙏 Acknowledgments
 
