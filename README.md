@@ -79,6 +79,15 @@ Project NOVA includes over 25 specialized agents across multiple domains:
 - [Home Assistant Agent](https://github.com/voska/hass-mcp) - Controls smart home devices through Home Assistant
 - [Prometheus Agent](https://github.com/pab1it0/prometheus-mcp-server) - Queries and analyzes metrics from Prometheus monitoring
 
+## 🔍 Use Cases
+
+- **Home Automation**: "Turn off the living room lights and start playing my evening playlist"
+- **Knowledge Management**: "Find my notes about the project meeting from last Tuesday"
+- **Creative Production**: "Help me set up a new Ableton Live project with a drum rack"
+- **Development Assistance**: "Check my Gitea repositories for any open pull requests"
+- **System Management**: "Monitor the CPU usage on my server for the last 24 hours"
+- **Content Analysis**: "Get the transcript from this YouTube video and summarize the key points"
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -122,13 +131,10 @@ cd project-nova
 This setup provides the best user experience with conversation history, session management, and a modern interface.
 
 1. **Set up OpenWebUI inlet filter**:
-   - Copy the contents of `openwebui-function/n8n_inlet_filter.py` from this repository
    - In your OpenWebUI instance, navigate to **Workspace** → **Functions**
-   - Click **"Create New Function"** and select **"Filter"** as the function type
-   - Paste the code from `n8n_inlet_filter.py` into the function editor
-   - **Important**: Update the configuration variables at the top of the filter:
-     - Change `n8n_url` to point to your n8n instance (replace `localhost` with your server IP/hostname)
-     - Replace `[your-uuid]` in the webhook URL with your actual n8n webhook UUID
+   - Click **"Create New Function"**
+   - Copy and paste the code from `openwebui-function/n8n_inlet_filter.py` into the function editor
+   - **Important**: Update the `n8n_url` configuration variable at the top of the filter with your complete n8n webhook URL (including server IP/hostname and webhook UUID)
    - Save the filter
 
 2. **Create a new model using the filter**:
@@ -229,19 +235,6 @@ Project NOVA now includes sophisticated conversation context handling:
 - **System Management**: "Monitor the CPU usage on my server for the last 24 hours"
 - **Content Analysis**: "Get the transcript from this YouTube video and summarize the key points"
 
-## 📊 Performance Considerations
-
-- **Recommended minimum specs for basic setup**: 4GB RAM, 2 CPU cores
-- **For OpenWebUI + full agent ecosystem**: 16GB RAM, 8 CPU cores recommended
-- **Consider using local LLM inference** (Ollama) for reduced API costs and latency
-- **MCP server resource usage** varies by agent - monitor container usage and scale as needed
-
-## 🔮 Future Development
-
-- [ ] Enhanced OpenWebUI integration features:
-  - File upload support through agents
-- [ ] Additional specialized agents for more domains
-
 ## 📁 Repository Structure
 
 ```
@@ -271,6 +264,19 @@ project-nova/
         ├── media-agents.md
         └── automation-agents.md
 ```
+
+## 📊 Performance Considerations
+
+- **Recommended minimum specs for basic setup**: 4GB RAM, 2 CPU cores
+- **For OpenWebUI + full agent ecosystem**: 16GB RAM, 8 CPU cores recommended
+- **Consider using local LLM inference** (Ollama) for reduced API costs and latency
+- **MCP server resource usage** varies by agent - monitor container usage and scale as needed
+
+## 🔮 Future Development
+
+- [ ] Enhanced OpenWebUI integration features:
+  - File upload support through agents
+- [ ] Additional specialized agents for more domains
 
 ## 🙏 Acknowledgments
 
