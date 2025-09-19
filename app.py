@@ -1,38 +1,59 @@
 import streamlit as st
-from pydantic import BaseModel
-from typing import Callable
+import os
+from pathlib import Path
 
-# Define message schema
+# If you're using pydantic, but largely optional here
+from pydantic import BaseModel, Field
+
+# Message model (optional)
 class Message(BaseModel):
-    text: str
-    intent: str
+    text: str = Field(..., description="User message")
+    agent: str = Field(..., description="Which agent to use")
 
-# Define simple agent class
-class Agent:
-    def __init__(self, name: str, handle: Callable[[Message], str], intents: list[str]):
-        self.name = name
-        self.handle = handle
-        self.intents = intents
+# Directory with your agent specs
+AGENTS_DIR = "agents"  # adjust path if needed
 
-# Simple intent handlers
-def joke_agent(msg): return "Why did the chicken join Streamlit? To build apps!"
-def math_agent(msg): return f"2 + 2 = {2 + 2}"
-def fallback(msg): return "I don't understand that."
+def load_agent_specs():
+    specs = {}
+    p = Path(AGENTS_DIR)
+    if not p.exists():
+        return specs
+    for md in p.glob("*.md"):
+        name = md.stem  # file name without extension
+        content = md.read_text(encoding="utf-8")
+        specs[name] = content
+    return specs
 
-# Create agent instances
-agents = [
-    Agent("JokeAgent", joke_agent, ["joke", "funny"]),
-    Agent("MathAgent", math_agent, ["math", "calculate"]),
-]
+def stub_handler(agent_name: str, message: str) -> str:
+    # Simple stub response
+    return f"Agent **{agent_name}** received: {message}"
 
-# Streamlit UI
-st.title("🧠 Hub-and-Spoke Routing Demo")
+def main():
+    st.set_page_config(page_title="Project NOVA Agent Hub", page_icon="🧠")
+    st.title("🚀 Project NOVA: Agent Hub Demo")
 
-user_input = st.text_input("Say something:")
-intent = st.selectbox("Choose intent (simulate NLU)", ["joke", "math", "unknown"])
+    # load specs
+    agent_specs = load_agent_specs()
+    if not agent_specs:
+        st.error("No agent spec files found in `agents/` folder.")
+        return
 
-if st.button("Send"):
-    message = Message(text=user_input, intent=intent)
-    matched = next((a for a in agents if intent in a.intents), None)
-    response = matched.handle(message) if matched else fallback(message)
-    st.markdown(f"**Agent Response:** {response}")
+    # pick an agent
+    agent_names = list(agent_specs.keys())
+    agent_choice = st.selectbox("Select an agent", agent_names)
+
+    # display spec
+    spec_md = agent_specs[agent_choice]
+    st.markdown(f"### Spec for **{agent_choice}**")
+    st.markdown(spec_md)
+
+    # user message
+    user_text = st.text_input("Send a message to this agent:")
+
+    if st.button("Send"):
+        response = stub_handler(agent_choice, user_text)
+        st.markdown("**Response:**")
+        st.write(response)
+
+if __name__ == "__main__":
+    main()
