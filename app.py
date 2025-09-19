@@ -1,59 +1,83 @@
 import streamlit as st
 import os
 from pathlib import Path
-
-# If you're using pydantic, but largely optional here
 from pydantic import BaseModel, Field
 
-# Message model (optional)
+# -----------------------------
+# CONFIG
+# -----------------------------
+AGENTS_DIR = "agents"
+
+# -----------------------------
+# MODELS
+# -----------------------------
 class Message(BaseModel):
-    text: str = Field(..., description="User message")
-    agent: str = Field(..., description="Which agent to use")
+    text: str = Field(...)
+    agent: str = Field(...)
 
-# Directory with your agent specs
-AGENTS_DIR = "agents"  # adjust path if needed
-
+# -----------------------------
+# HELPERS
+# -----------------------------
 def load_agent_specs():
     specs = {}
     p = Path(AGENTS_DIR)
     if not p.exists():
         return specs
     for md in p.glob("*.md"):
-        name = md.stem  # file name without extension
-        content = md.read_text(encoding="utf-8")
-        specs[name] = content
+        name = md.stem.replace("-agent", "").replace("_", " ").title()
+        specs[name] = md.read_text(encoding="utf-8")
     return specs
 
 def stub_handler(agent_name: str, message: str) -> str:
-    # Simple stub response
-    return f"Agent **{agent_name}** received: {message}"
+    return f"\n🤖 **{agent_name}** says: _'You said \"{message}\".'_"
+
+# -----------------------------
+# MAIN APP
+# -----------------------------
 
 def main():
-    st.set_page_config(page_title="Project NOVA Agent Hub", page_icon="🧠")
-    st.title("🚀 Project NOVA: Agent Hub Demo")
+    st.set_page_config(page_title="Primus Stack — Agent Hub", layout="wide")
 
-    # load specs
+    st.markdown("""
+    <style>
+        .agent-card {
+            padding: 1rem;
+            border: 1px solid #444;
+            border-radius: 0.5rem;
+            background-color: #111;
+            margin-bottom: 1rem;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.title("🧠 Primus Stack — Agent Hub")
+    st.caption("Interact with available agents below. Specs loaded dynamically.")
+
     agent_specs = load_agent_specs()
     if not agent_specs:
-        st.error("No agent spec files found in `agents/` folder.")
+        st.warning("No agents found in the `agents/` folder.")
         return
 
-    # pick an agent
-    agent_names = list(agent_specs.keys())
-    agent_choice = st.selectbox("Select an agent", agent_names)
+    col1, col2 = st.columns([1, 2])
 
-    # display spec
-    spec_md = agent_specs[agent_choice]
-    st.markdown(f"### Spec for **{agent_choice}**")
-    st.markdown(spec_md)
+    with col1:
+        st.subheader("📦 Agents Available")
+        agent_names = list(agent_specs.keys())
+        agent_choice = st.radio("Select an Agent:", agent_names)
 
-    # user message
-    user_text = st.text_input("Send a message to this agent:")
+    with col2:
+        st.subheader(f"📄 Agent Spec: {agent_choice}")
+        st.markdown(agent_specs[agent_choice])
 
-    if st.button("Send"):
-        response = stub_handler(agent_choice, user_text)
-        st.markdown("**Response:**")
-        st.write(response)
+        st.divider()
 
-if __name__ == "__main__":
+        st.markdown("### 💬 Send a Message")
+        user_input = st.text_input("What do you want to say?")
+
+        if st.button("Send"):
+            msg = Message(text=user_input, agent=agent_choice)
+            reply = stub_handler(msg.agent, msg.text)
+            st.success(reply)
+
+if __name__ == '__main__':
     main()
