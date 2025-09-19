@@ -1,21 +1,17 @@
-# app.py
 import streamlit as st
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class User(BaseModel):
-    name: str = Field(..., description="User's name")
-    age: int = Field(..., description="User's age")
+    name: str
+    age: int
 
-st.title("🧪 Pydantic Streamlit Demo")
+st.title("✅ Pydantic Streamlit Works")
 
-st.markdown("This app uses `pydantic` to define a simple user model.")
+name = st.text_input("Name")
+age = st.number_input("Age", min_value=0, step=1)
 
-name = st.text_input("Enter your name:")
-age = st.number_input("Enter your age:", min_value=0, max_value=150)
-
-if st.button("Create User"):
-    try:
-        user = User(name=name, age=age)
-        st.success(f"✅ Valid user: {user}")
-    except Exception as e:
-        st.error(f"❌ Error: {e}")
+try:
+    user = User(name=name, age=age)
+    st.success(f"Valid: {user}")
+except Exception as e:
+    st.error(str(e))
