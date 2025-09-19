@@ -1,17 +1,38 @@
 import streamlit as st
 from pydantic import BaseModel
+from typing import Callable
 
-class User(BaseModel):
-    name: str
-    age: int
+# Define message schema
+class Message(BaseModel):
+    text: str
+    intent: str
 
-st.title("✅ Pydantic Streamlit Works")
+# Define simple agent class
+class Agent:
+    def __init__(self, name: str, handle: Callable[[Message], str], intents: list[str]):
+        self.name = name
+        self.handle = handle
+        self.intents = intents
 
-name = st.text_input("Name")
-age = st.number_input("Age", min_value=0, step=1)
+# Simple intent handlers
+def joke_agent(msg): return "Why did the chicken join Streamlit? To build apps!"
+def math_agent(msg): return f"2 + 2 = {2 + 2}"
+def fallback(msg): return "I don't understand that."
 
-try:
-    user = User(name=name, age=age)
-    st.success(f"Valid: {user}")
-except Exception as e:
-    st.error(str(e))
+# Create agent instances
+agents = [
+    Agent("JokeAgent", joke_agent, ["joke", "funny"]),
+    Agent("MathAgent", math_agent, ["math", "calculate"]),
+]
+
+# Streamlit UI
+st.title("🧠 Hub-and-Spoke Routing Demo")
+
+user_input = st.text_input("Say something:")
+intent = st.selectbox("Choose intent (simulate NLU)", ["joke", "math", "unknown"])
+
+if st.button("Send"):
+    message = Message(text=user_input, intent=intent)
+    matched = next((a for a in agents if intent in a.intents), None)
+    response = matched.handle(message) if matched else fallback(message)
+    st.markdown(f"**Agent Response:** {response}")
